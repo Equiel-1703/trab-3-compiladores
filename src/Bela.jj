@@ -1,0 +1,122 @@
+PARSER_BEGIN(Bela)
+
+import java.io.*;
+public class Bela {
+
+  public static void main(String args[]) throws ParseException,IOException {
+    
+ 	Bela analisador = new Bela(new FileInputStream(args[0]));
+ 	analisador.Bela();
+  }
+
+}
+
+PARSER_END(Bela)
+
+// Isso é pra ser ignorado (espaços em branco e tabs)
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+  // Keywords
+  <MAIN: "main">
+  |<VAR: "var">
+  |<IF: "if">
+  |<THEN: "then">
+  |<WHILE: "while">
+  |<READ_INPUT: "readInput">
+  |<RETURN: "return">
+  |<PRINT: "printLn">
+  |<TRUE: "true">
+  |<FALSE: "false">
+  |<FUNC_DECL: "fun">
+
+
+  // Parênteses, chaves, ponto e vírgula etc
+  |<SEMCOL: ";">
+  |<APAR: "(">
+  |<FPAR: ")">  
+  |<ACHAVES: "{">
+  |<FCHAVES: "}">
+  |<COL: ",">
+
+  // Operações
+  |<OP_SUM: "+">
+  |<OP_SUB: "-">
+  |<OP_MULT: "*">
+  |<OP_DIV: "/">
+  |<OP_AND: "&&">
+  |<OP_OR: "||">
+  |<OP_LT: "<">
+  |<OP_GT: ">">
+  |<OP_EQ: "==">
+  |<ATRIB: "=">
+
+  // Tipos
+  |<TYPE_FLOAT: "float">
+  |<TYPE_BOOL: "bool">
+  |<TYPE_VOID: "void">
+  
+}
+
+TOKEN :
+{
+  <NUM : (["0"-"9"])+ ("." (["0"-"9"])+)? ("e" ("+" | "-")? (["0"-"9"])+)?>
+  |< ID: ["a"-"z","A"-"Z"] (["a"-"z","A"-"Z","0"-"9"])* ("_" (["a"-"z","A"-"Z","0"-"9"])+)*>
+  
+}
+
+
+
+void Bela () :
+{Token t;}
+{
+
+(
+  <MAIN> { System.out.println("Palavra reservada: main");}
+| <VAR> { System.out.println("Palavra reservada: var");}
+| <IF> { System.out.println("Palavra reservada: if");}
+| <THEN> { System.out.println("Palavra reservada: then");}
+| <WHILE> { System.out.println("Palavra reservada: while");}
+| <READ_INPUT> { System.out.println("Palavra reservada: readInput");}
+| <RETURN> { System.out.println("Palavra reservada: return");}
+| <PRINT> { System.out.println("Palavra reservada: printLn");}
+| <TRUE> { System.out.println("Palavra reservada: true");}
+| <FALSE> { System.out.println("Palavra reservada: false");}
+| <FUNC_DECL> { System.out.println("Palavra reservada: fun");}
+
+| <SEMCOL> { System.out.println("Ponto e virgula: ;"); }
+| <APAR> { System.out.println("Abre parenteses: (");}
+| <FPAR> { System.out.println("Fecha parenteses: )");}
+| <ACHAVES> { System.out.println("Abre chaves: {");}
+| <FCHAVES> { System.out.println("Fecha chaves: }");}
+| <COL> { System.out.println("Virgula (,)"); }
+
+| <OP_SUM> { System.out.println("OP soma (+)"); }
+| <OP_SUB> { System.out.println("OP subtracao (-)"); }
+| <OP_MULT> { System.out.println("OP multiplicacao (*)"); }
+| <OP_DIV> { System.out.println("OP divisao (/)"); }
+| <OP_AND> { System.out.println("OP and (&&)"); }
+| <OP_OR> { System.out.println("OP or (||)"); }
+| <OP_LT> { System.out.println("OP less than (<)"); }
+| <OP_GT> { System.out.println("OP greater than (>)"); }
+| <OP_EQ> { System.out.println("OP igualdade (==)"); }
+| <ATRIB> { System.out.println("OP atribuição (=)"); }
+
+| <TYPE_BOOL> { System.out.println("Tipo bool"); }
+| <TYPE_FLOAT> { System.out.println("Tipo float"); }
+| <TYPE_VOID> { System.out.println("Tipo void"); }
+
+| t=<NUM> { System.out.println("Número: "+ t.image);}
+| t=<ID> { System.out.println("Identificador: "+ t.image);}
+)*
+<EOF> 
+
+
+}
