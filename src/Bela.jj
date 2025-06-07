@@ -75,6 +75,11 @@ TOKEN :
 
 void Bela () : {}
 {
+  (Main()) (Func())?
+}
+
+void Main() : {}
+{
   <MAIN> <APAR> <FPAR> <ACHAVES> VarDecl() SeqComs() <FCHAVES>
 }
 
@@ -95,17 +100,52 @@ void SeqComs() : {}
 
 void Comando() : {}
 {
-  <ID> <ATRIB> Exp() <SEMCOL>                                 // Atribuição
-  | <ID> <APAR> (ListaExp())? <FPAR> <SEMCOL>                 // Chamada de função
+  <ID> IDCommands() <SEMCOL>                                  // ID commands
   | <IF> Exp() <THEN> <ACHAVES> SeqComs() <FCHAVES> <SEMCOL>  // if-then
+  | <WHILE> Exp() <ACHAVES> SeqComs() <FCHAVES> <SEMCOL>      // while
+  | <RETURN> Exp() <SEMCOL>                                   // return
+  | <PRINT> Exp() <SEMCOL>                                    // printLn
+}
+
+void IDCommands() : {}
+{
+  <APAR> (ListaExp())? <FPAR> // ID function call
+  | <ATRIB> IDAttrib()        // ID assignment
+}
+
+void IDAttrib() : {}
+{
+  Exp()                         // Expression assignment
+  | <READ_INPUT> <APAR> <FPAR>  // ID readInput
 }
 
 void Exp() : {}
 {
+  <APAR> Exp() Op() Exp() <FPAR> | Fator() // Por que ele aceita recursão à esquerda aqui?
+}
 
+void Fator() : {}
+{
+  <ID> (<APAR> (ListaExp())? <FPAR>)? | <NUM> | <TRUE> | <FALSE>
+}
+
+void Op() : {}
+{
+  <OP_SUM> | <OP_SUB> | <OP_MULT> | <OP_DIV>
+  | <OP_AND> | <OP_OR> | <OP_LT> | <OP_GT> | <OP_EQ>
 }
 
 void ListaExp() : {}
 {
+  Exp() (<COL> Exp())*
+}
 
+void ListaArgs() : {}
+{
+  Tipo() <ID> (<COL> Tipo() <ID>)*
+}
+
+void Func() : {}
+{
+  (<FUNC_DECL> Tipo() <ID> <APAR> (ListaArgs())? <FPAR> <ACHAVES> VarDecl() SeqComs() <FCHAVES>)+
 }
